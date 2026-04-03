@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HAIPAI RUSH — 天和が出るまで止まらない 🀄</title>
+  <meta name="description" content="配牌14枚で天和や役満が出るまでひたすらシミュレート。2D・3Dモード対応の麻雀配牌シミュレーター。">
+  <meta property="og:title" content="HAIPAI RUSH — 天和が出るまで止まらない">
+  <meta property="og:description" content="配牌14枚で天和や役満が出るまでひたすらシミュレート。10種の役満に挑戦！">
+  <meta property="og:image" content="og-image.png">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="HAIPAI RUSH — 天和が出るまで止まらない">
+  <meta name="twitter:description" content="配牌14枚で天和や役満が出るまでひたすらシミュレート。10種の役満に挑戦！">
+  <meta name="twitter:image" content="og-image.png">
+  <link rel="icon" href="favicon.ico" sizes="32x32">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style-3d.css">
+</head>
+<body>
+  <div id="app">
+    <header>
+      <img src="logo.webp" alt="HAIPAI RUSH — 天和が出るまで止まらない" id="header-logo">
+    </header>
+
+    <!-- タブ -->
+    <div id="tab-bar" role="tablist" aria-label="シミュレーションモード">
+      <button class="tab-btn active" data-tab="tenhou" role="tab" aria-selected="true" aria-controls="tab-tenhou" id="tabBtn-tenhou">役満チャレンジ</button>
+      <button class="tab-btn" data-tab="tenhou3d" role="tab" aria-selected="false" aria-controls="tab-tenhou3d" id="tabBtn-tenhou3d">3D モード</button>
+    </div>
+
+    <!-- 役満チャレンジタブ（2D） -->
+    <div id="tab-tenhou" class="tab-pane" role="tabpanel" aria-labelledby="tabBtn-tenhou">
+
+      <div class="tab-desc">
+        配牌14枚で役満が成立するかをひたすらシミュレート　天和をはじめ様々な役満に挑戦
+      </div>
+
+      <!-- 上部木枠 -->
+      <div class="wood-rail"></div>
+
+      <!-- フェルト面 -->
+      <div class="felt-surface">
+
+        <div id="controls">
+          <button id="start-btn">▶ スタート</button>
+          <button id="stop-btn" class="hidden">⏹ ストップ</button>
+        </div>
+
+        <div id="stats">
+          <div class="stat-box">
+            <span class="stat-label">試行回数</span>
+            <span class="stat-value" id="count">0</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-label">速度</span>
+            <input type="range" id="speed" min="1" max="10000" value="5" aria-label="シミュレーション速度">
+            <span id="speed-label">×5</span>
+          </div>
+        </div>
+
+        <div id="tiles-area">
+          <div id="tiles-container">
+            <div class="tile-row" id="tile-row"></div>
+          </div>
+          <div id="tsumo-area">
+            <div id="tsumo-tile" class="tile hidden"></div>
+          </div>
+        </div>
+
+      </div><!-- /felt-surface -->
+
+      <!-- 下部木枠 -->
+      <div class="wood-rail-bottom"></div>
+
+      <div id="yakuman-panel" class="table-panel">
+        <div id="yakuman-header">
+          <span class="panel-title">狙う役満を選択</span>
+          <div class="yakuman-actions">
+            <button id="select-all-btn">全選択</button>
+            <button id="clear-btn">クリア</button>
+          </div>
+        </div>
+        <div id="yakuman-grid"></div>
+        <div id="yakuman-notice">※ 未選択の場合は天和のみ判定</div>
+      </div>
+
+      <div id="result-overlay" class="hidden" role="dialog" aria-modal="true" aria-label="結果">
+        <div id="result-box">
+          <div id="result-label">天和達成！</div>
+          <div id="result-tiles"></div>
+          <div id="result-yaku"></div>
+          <div id="result-count"></div>
+          <button id="restart-btn">もう一回</button>
+        </div>
+      </div>
+
+    </div><!-- /tab-tenhou -->
+
+    <!-- 3Dモードタブ -->
+    <div id="tab-tenhou3d" class="tab-pane hidden" role="tabpanel" aria-labelledby="tabBtn-tenhou3d">
+
+      <div class="tab-desc">
+        リアルな3D雀卓で役満チャレンジ　配牌14枚でアガり形が揃う奇跡を目撃せよ
+      </div>
+
+      <div id="td-3d-wrapper">
+        <div id="td-3d-container"></div>
+
+        <div id="td-hud">
+          <div id="td-controls">
+            <button id="td-start-btn">▶ スタート</button>
+            <button id="td-stop-btn" class="hidden">⏹ ストップ</button>
+          </div>
+
+          <div id="td-stats">
+            <div class="stat-box">
+              <span class="stat-label">試行回数</span>
+              <span class="stat-value" id="td-count">0</span>
+            </div>
+            <div class="stat-box">
+              <span class="stat-label">速度</span>
+              <input type="range" id="td-speed" min="1" max="10000" value="5" aria-label="シミュレーション速度">
+              <span id="td-speed-label">×5</span>
+            </div>
+          </div>
+
+          <div id="td-result-overlay" class="hidden" role="dialog" aria-modal="true" aria-label="結果">
+            <div id="td-result-box">
+              <div id="td-result-label">天和達成！</div>
+              <div id="td-result-tiles"></div>
+              <div id="td-result-yaku"></div>
+              <div id="td-result-count"></div>
+              <button id="td-restart-btn">もう一回</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="td-yakuman-panel" class="table-panel">
+        <div id="td-yakuman-header">
+          <span class="panel-title">狙う役満を選択</span>
+          <div class="yakuman-actions">
+            <button id="td-select-all-btn">全選択</button>
+            <button id="td-clear-btn">クリア</button>
+          </div>
+        </div>
+        <div id="td-yakuman-grid"></div>
+        <div id="td-yakuman-notice">※ 未選択の場合は天和のみ判定</div>
+      </div>
+
+    </div><!-- /tab-tenhou3d -->
+
+  </div>
+
+  <!-- パーティクルキャンバス -->
+  <canvas id="particle-canvas"></canvas>
+
+  <!-- Three.js -->
+  <script src="https://unpkg.com/three@0.158.0/build/three.min.js"></script>
+  <script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.158.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.158.0/examples/jsm/"}}</script>
+  <script type="module">
+    import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+    THREE.GLTFLoader = GLTFLoader;
+  </script>
+
+  <script src="riichi.bundle.js"></script>
+  <script src="mahjong.js"></script>
+  <script src="riichi-bridge.js"></script>
+  <script src="ui-common.js"></script>
+  <script src="main.js"></script>
+  <script src="theme.js"></script>
+  <script src="three-scene.js"></script>
+  <script src="main-3d.js"></script>
+  <script>
+    Main3D.init();
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (btn.dataset.tab === 'tenhou3d') Main3D.initScene();
+      });
+    });
+  </script>
+</body>
+</html>

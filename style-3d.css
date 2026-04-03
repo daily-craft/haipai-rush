@@ -1,0 +1,274 @@
+/* ===== 3D モード専用スタイル ===== */
+
+#td-3d-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+#td-3d-container {
+  width: 100%;
+  height: 480px;
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #0a1208;
+  /* 多層シャドウ: 内側の陰影 + 外側のドロップシャドウ + 金色の縁取りグロー */
+  box-shadow:
+    inset 0 0 60px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(200, 168, 75, 0.12),
+    0 2px 0 rgba(200, 168, 75, 0.08),
+    0 8px 32px rgba(0, 0, 0, 0.7),
+    0 0 1px rgba(200, 168, 75, 0.2);
+  /* 立体感のあるベベルボーダー */
+  border: 1px solid rgba(200, 168, 75, 0.15);
+  border-top-color: rgba(200, 168, 75, 0.25);
+  border-bottom-color: rgba(80, 60, 20, 0.3);
+}
+
+@media (min-width: 768px) {
+  #td-3d-container { height: 560px; }
+}
+
+/* --- HUD --- */
+#td-hud {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  pointer-events: none;
+  z-index: 10;
+}
+#td-hud > * { pointer-events: auto; }
+
+#td-controls {
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 11;
+}
+
+#td-controls button {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 15px;
+  font-weight: 700;
+  padding: 8px 24px;
+  border: 1px solid rgba(180, 155, 70, 0.25);
+  border-top-color: rgba(180, 155, 70, 0.35);
+  border-bottom-color: rgba(80, 60, 20, 0.3);
+  border-radius: 6px;
+  cursor: pointer;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.03) 35%, transparent 50%, rgba(0,0,0,0.12) 100%),
+    url('btn-green-urushi.webp');
+  background-size: auto, cover;
+  color: var(--gold2, #e8c96a);
+  backdrop-filter: blur(8px);
+  transition: all 0.2s;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+  box-shadow:
+    0 1px 0 rgba(180,155,70,0.1),
+    0 4px 16px rgba(0,0,0,0.5),
+    inset 0 1px 0 rgba(255,255,255,0.1),
+    inset 0 -1px 0 rgba(0,0,0,0.2);
+}
+#td-controls button:hover {
+  filter: brightness(1.1);
+  border-color: rgba(180, 155, 70, 0.4);
+  box-shadow:
+    0 1px 0 rgba(180,155,70,0.15),
+    0 6px 24px rgba(0,0,0,0.5),
+    inset 0 1px 0 rgba(255,255,255,0.15);
+}
+
+/* --- Stats --- */
+#td-stats {
+  position: absolute;
+  top: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  background:
+    linear-gradient(180deg,
+      rgba(255,255,255,0.04) 0%,
+      rgba(255,255,255,0.01) 30%,
+      transparent 50%,
+      rgba(0,0,0,0.12) 100%
+    ),
+    linear-gradient(160deg, rgba(15,28,18,0.92) 0%, rgba(8,18,10,0.96) 100%);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(200, 168, 75, 0.18);
+  border-top-color: rgba(200, 168, 75, 0.25);
+  border-bottom-color: rgba(80, 60, 20, 0.15);
+  border-radius: 10px;
+  padding: 8px 24px;
+  z-index: 11;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.05),
+    inset 0 -1px 0 rgba(0,0,0,0.15),
+    0 2px 8px rgba(0,0,0,0.35),
+    0 0 1px rgba(200, 168, 75, 0.08);
+}
+#td-stats .stat-box { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+#td-stats .stat-label { font-size: 10px; color: #8a9a84; letter-spacing: 0.5px; }
+#td-stats .stat-value { font-size: 18px; font-weight: 900; color: var(--gold2, #e8c96a); font-family: 'Noto Serif JP', serif; }
+#td-stats .stat-box:has(input[type="range"]) { flex-direction: row; gap: 8px; }
+
+#td-speed {
+  width: 80px;
+  -webkit-appearance: none; appearance: none;
+  height: 4px; border-radius: 2px;
+  background: rgba(200, 168, 75, 0.25);
+  outline: none;
+}
+#td-speed::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px; height: 14px; border-radius: 50%;
+  background: linear-gradient(135deg, #e8c96a, #c8a84b);
+  cursor: pointer;
+  box-shadow: 0 0 6px rgba(200, 168, 75, 0.5);
+}
+#td-speed-label { font-size: 12px; color: var(--gold, #c8a84b); font-weight: 700; min-width: 32px; }
+
+/* スタッツ数値パルス */
+#td-count.pulse {
+  animation: statPulse 0.3s ease-out;
+}
+@keyframes statPulse {
+  0%   { color: #fff; text-shadow: 0 0 8px rgba(255, 215, 0, 0.6); transform: scale(1.08); }
+  100% { color: var(--gold2, #e8c96a); text-shadow: none; transform: scale(1); }
+}
+
+/* --- Result overlay --- */
+#td-result-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(5, 10, 5, 0.85);
+  backdrop-filter: blur(8px);
+  z-index: 50;
+  animation: winFlashIn 0.8s ease-out;
+  pointer-events: auto;
+}
+#td-result-overlay.hidden { display: none; }
+
+#td-result-box {
+  animation: resultBoxPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both;
+}
+
+@keyframes winFlashIn {
+  0%   { opacity: 0; background: rgba(255, 215, 0, 0.6); }
+  20%  { opacity: 1; background: rgba(255, 215, 0, 0.25); }
+  50%  { background: rgba(255, 215, 0, 0.08); }
+  100% { background: rgba(5, 10, 5, 0.85); }
+}
+
+@keyframes resultBoxPop {
+  0%   { opacity: 0; transform: scale(0.7) translateY(20px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes fadeIn3d {
+  from { opacity: 0; } to { opacity: 1; }
+}
+
+#td-result-box {
+  background: linear-gradient(160deg, rgba(20, 40, 20, 0.95), rgba(10, 25, 12, 0.95));
+  border: 1px solid rgba(200, 168, 75, 0.35);
+  border-radius: 16px;
+  padding: 28px 36px;
+  text-align: center;
+  max-width: 90%;
+  box-shadow: 0 0 60px rgba(200, 168, 75, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+#td-result-label {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 26px; font-weight: 900;
+  background: linear-gradient(135deg, #ffd700, #c8a84b, #ffd700);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 16px;
+}
+
+#td-result-tiles {
+  display: flex; flex-wrap: wrap;
+  justify-content: center; align-items: flex-end;
+  gap: 3px; margin-bottom: 16px;
+}
+#td-result-tiles .tile { width: auto; }
+#td-result-tiles .tile-img { width: 42px; height: 56px; border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.6); }
+#td-result-tiles .result-tsumo-sep { width: 16px; display: flex; align-items: center; justify-content: center; }
+#td-result-tiles .result-win-type-label { font-size: 9px; color: var(--gold2, #e8c96a); writing-mode: vertical-rl; font-weight: 700; }
+
+#td-result-yaku { margin-bottom: 12px; }
+#td-result-yaku .yaku-badge {
+  display: inline-block; padding: 4px 14px; margin: 3px;
+  font-size: 14px; font-weight: 700; color: #fff;
+  background: linear-gradient(135deg, #b8860b, #daa520);
+  border-radius: 20px; box-shadow: 0 2px 8px rgba(184, 134, 11, 0.4);
+}
+#td-result-yaku .result-score { font-size: 16px; font-weight: 900; color: var(--gold2, #e8c96a); margin-top: 8px; }
+#td-result-count { font-size: 15px; color: var(--text2, #c8bfa8); margin-bottom: 16px; }
+
+#td-restart-btn {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 15px; font-weight: 700;
+  padding: 10px 32px;
+  border: 1px solid rgba(180, 155, 70, 0.25);
+  border-top-color: rgba(180, 155, 70, 0.35);
+  border-bottom-color: rgba(80, 60, 20, 0.3);
+  border-radius: 6px; cursor: pointer;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.03) 35%, transparent 50%, rgba(0,0,0,0.12) 100%),
+    url('btn-green-urushi.webp');
+  background-size: auto, cover;
+  color: var(--gold2, #e8c96a); transition: all 0.2s;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+  box-shadow:
+    0 1px 0 rgba(180,155,70,0.1),
+    0 4px 16px rgba(0,0,0,0.5),
+    inset 0 1px 0 rgba(255,255,255,0.1),
+    inset 0 -1px 0 rgba(0,0,0,0.2);
+}
+#td-restart-btn:hover {
+  filter: brightness(1.1);
+  box-shadow:
+    0 1px 0 rgba(180,155,70,0.15),
+    0 6px 24px rgba(0,0,0,0.5),
+    inset 0 1px 0 rgba(255,255,255,0.15);
+}
+
+/* --- Bloom風グロー演出（勝利時） --- */
+#td-3d-container.win-glow {
+  animation: bloomPulse 2.5s ease-out forwards;
+}
+#td-3d-container.win-glow canvas {
+  filter: brightness(1.05) contrast(1.05);
+}
+@keyframes bloomPulse {
+  0%   { box-shadow: inset 0 0 60px rgba(0,0,0,0.5), 0 8px 32px rgba(0,0,0,0.6); }
+  15%  { box-shadow: inset 0 0 30px rgba(0,0,0,0.3), 0 0 40px rgba(255,215,0,0.3), 0 0 80px rgba(255,215,0,0.15); }
+  40%  { box-shadow: inset 0 0 40px rgba(0,0,0,0.3), 0 0 30px rgba(255,215,0,0.2), 0 0 60px rgba(255,215,0,0.1); }
+  100% { box-shadow: inset 0 0 60px rgba(0,0,0,0.5), 0 8px 32px rgba(0,0,0,0.6); }
+}
+
+/* --- 役満パネル --- */
+#td-yakuman-panel { margin-top: 24px; width: calc(100% - 40px); margin-left: 20px; margin-right: 20px; }
+#td-yakuman-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+#td-yakuman-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px 14px;
+}
